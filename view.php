@@ -210,6 +210,12 @@
             }
             include $CFG->dirroot.'/mod/flashcard/editview.php';
             break;
+        case 'editcard' : 
+            if (!has_capability('mod/flashcard:manage', $context)){
+                redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
+            }
+            include $CFG->dirroot.'/mod/flashcard/editcardview.php';
+            break;
         case 'manage' : 
             echo "HERE WE ARE";
             if (!has_capability('mod/flashcard:manage', $context)){

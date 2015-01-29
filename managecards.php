@@ -27,14 +27,14 @@
     $table->width = '100%';    
     $table->align = array('center', 'center', 'center', 'center');
 
-	$editurl = $CFG->wwwroot.'/mod/flashcard/view.php?id='.$id.'&view=edit';
+	$editurl = $CFG->wwwroot.'/mod/flashcard/view.php?id='.$id.'&view=editcard';
 
 	$i = 0;
 	if ($cards){
 		foreach ($cards as $card){
 			$check = "<input type=\"checkbox\" name=\"items[]\" value=\"{$card->id}\" />";
-	
-	        if ($flashcard->questionsmediatype == FLASHCARD_MEDIA_IMAGE) {
+	       //CRL for now only show text - maybe thumbnails or somehting
+	       /* if ($flashcard->questionsmediatype == FLASHCARD_MEDIA_IMAGE) {
 	            // $back = flashcard_print_image($flashcard, $card->questiontext, true);
 	            $back = flashcard_print_image($flashcard, "questionimagefile/{$card->id}", true);
 	        } elseif ($flashcard->questionsmediatype == FLASHCARD_MEDIA_SOUND){
@@ -50,11 +50,11 @@
 	            $back .= "<br/>";
 	            // $back .= flashcard_play_sound($flashcard, $sound, 'false', true, "bell_f$i");
 	            $back = flashcard_play_sound($flashcard, "questionsoundfile/{$card->id}", 'false', true, "bell_b$i");
-	        } else {
+	        } else {  */
 	            $back = format_text($card->questiontext, FORMAT_MOODLE);
-	        }
-	
-	        if ($flashcard->answersmediatype == FLASHCARD_MEDIA_IMAGE) {
+	        //}
+	//Before calling format_text(), the content must be processed with file_rewrite_pluginfile_urls()
+	        /*if ($flashcard->answersmediatype == FLASHCARD_MEDIA_IMAGE) {
 	            // $front = flashcard_print_image($flashcard, $card->answertext, true);
 	            $front = flashcard_print_image($flashcard, "answerimagefile/{$card->id}", true);
 	        } elseif ($flashcard->answersmediatype == FLASHCARD_MEDIA_SOUND){
@@ -70,9 +70,9 @@
 	            $front .= "<br/>";
 	            // $front .= flashcard_play_sound($flashcard, $sound, 'false', true, "bell_f$i");
 	            $front = flashcard_play_sound($flashcard, "answersoundfile/{$card->id}", 'false', true, "bell_f$i");
-	        } else {
+	        } else {  */
 	            $front = format_text($card->answertext, FORMAT_MOODLE);
-	        }
+	        //}
 	
 			$command = "<a href=\"{$editurl}&what=update&cardid={$card->id}\"><img src=\"".$OUTPUT->pix_url('t/edit').'" /></a>';
 			$command .= " <a href=\"{$url}?id={$id}&view=manage&what=delete&items[]={$card->id}\"><img src=\"".$OUTPUT->pix_url('t/delete').'" /></a>';
