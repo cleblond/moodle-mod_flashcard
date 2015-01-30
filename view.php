@@ -123,7 +123,7 @@
     }
 
 /// Determine the current tab
-echo $view;
+echo "view=$view";
     switch($view){
         case 'checkdecks' : $currenttab = 'play'; break;
         case 'play' : $currenttab = 'play'; break;
@@ -131,6 +131,7 @@ echo $view;
         case 'summary' : $currenttab = 'summary'; break;
         case 'manage' : $currenttab = 'manage'; break;
         case 'editcard' : $currenttab = 'edit'; break;
+        case 'addsingle' : $currenttab = 'edit'; break;
         case 'edit' : $currenttab = 'edit'; break;
         case 'add' : $currenttab = 'edit'; break;        
         default : $currenttab = 'play';
@@ -225,7 +226,8 @@ echo $view;
     		//add_to_log($course->id, 'flashcard', 'manage', $thisurl."?id={$cm->id}", "{$flashcard->name}");
             include $CFG->dirroot.'/mod/flashcard/managecards.php';
             break;
-        case 'add' : 
+        case 'add' :
+            echo "<br>in add case";
             if (!has_capability('mod/flashcard:manage', $context)){
                 redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
             }

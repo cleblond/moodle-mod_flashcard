@@ -63,6 +63,7 @@ if ($action == 'delete') {
 if ($action == 'save') {
     echo "HERE IN SAVE";
     $keys = array_keys($_POST);    // get the key value of all the fields submitted
+    print_object($_POST);
     $qkeys = preg_grep('/^q/', $keys);   // filter out only the status
     $akeys = preg_grep('/^a/', $keys);   // filter out only the assigned updating
 
@@ -88,6 +89,41 @@ if ($action == 'save') {
             error("Could not update deck card");
         }
     }
+}
+/* * ****************************** Save and update single question **************************** */
+if ($action == 'savesingle') {
+    echo "HERE IN SAVESINGLE";
+    $keys = array_keys($_POST);    // get the key value of all the fields submitted
+    print_object($_POST);
+    
+    //$qkeys = preg_grep('/^q/', $keys);   // filter out only the status
+    //$akeys = preg_grep('/^a/', $keys);   // filter out only the assigned updating
+       // $question=required_param('question', PARAM_CLEAN);
+        $question=required_param_array('question', PARAM_CLEAN);
+        print_object($question['text']);
+
+    //foreach ($qkeys as $akey) {
+        preg_match("/[qi](\d+)/", $akey, $matches);
+        $card->id = $matches[1];
+        $card->flashcardid = $flashcard->id;
+        if ($flashcard->questionsmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
+            $card->questiontext = required_param("q{$card->id}", PARAM_CLEAN);
+        } else {
+            // combine image and sound in one single field
+            $card->questiontext = required_param("i{$card->id}", PARAM_CLEAN) . '@' . required_param("s{$card->id}",
+                            PARAM_CLEAN);
+        }
+        if ($flashcard->answersmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
+            $card->answertext = required_param("a{$card->id}", PARAM_CLEAN);
+        } else {
+            // combine image and sound in one single field
+            $card->answertext = required_param("i{$card->id}", PARAM_CLEAN) . '@' . required_param("s{$card->id}",
+                            PARAM_CLEAN);
+        }
+        if (!$DB->update_record('flashcard_deckdata', $card)) {
+            error("Could not update deck card");
+        }
+    //}
 }
 /* * ****************************** Prepare import **************************** */
 if ($action == 'import') {

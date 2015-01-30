@@ -22,7 +22,7 @@ if (!defined('MOODLE_INTERNAL')) {
 
 require_once('cardedit_form.php');
 
-$action = "save";
+$action = "savesingle";
 $cardid = null;
 
 if ($action != '') {
@@ -31,7 +31,9 @@ if ($action != '') {
 
 $cardsnum = $DB->count_records('flashcard_deckdata', array('flashcardid' => $flashcard->id));
 $form = new flashcard_cardedit_form(null, array('noaddbutton' => true, 'context' => $context, 'cardid' => $cardid));
-$form->set_data(array('view' => 'add', 'id' => $cm->id));
+$form->set_data(array('view' => 'addsingle', 'id' => $cm->id));
+
+echo "cardid=$cardid";
 echo "IN ADDSINGLEVUEW";
 if ($fromform = $form->get_data()) {
     $fileoptions = array(

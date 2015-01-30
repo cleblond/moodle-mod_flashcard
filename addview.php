@@ -15,7 +15,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 /* @var $OUTPUT core_renderer */
-
+echo "IN addview.php";
 if (!defined('MOODLE_INTERNAL')) {
     error("Illegal direct access to this screen");
 }
