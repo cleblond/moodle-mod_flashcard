@@ -555,3 +555,108 @@ function flashcard_get_page($flashcard, $page) {
 
     return $ret;
 }
+
+function flashcard_get_card($flashcard, $cardid) {
+    global $DB, $CFG;
+//echo "<br>flashcard_get_card";
+   /* if ($page == -1) {
+        //take the last page
+        $cardsnum = $DB->count_records('flashcard_deckdata', array('flashcardid' => $cardid));
+        $page = (int) ($cardsnum / FLASHCARD_CARDS_PER_PAGE);
+    }*/
+//    $cards = $DB->get_records('flashcard_deckdata', array('flashcardid' => $cardid), 'id', '*',
+//            FLASHCARD_CARDS_PER_PAGE * $page, FLASHCARD_CARDS_PER_PAGE);
+    $cards = $DB->get_record('flashcard_deckdata', array('id' => $cardid));
+    //print_object($cards);
+    $cm = get_coursemodule_from_instance('flashcard', $flashcard->id);
+    $context = context_module::instance($cm->id);
+
+    $ret = new object();
+    $ret->answer = array();
+    $ret->question = array();
+    $ret->id = array();
+    $editoroptions = array('context'=>$context ,'maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes'=>$CFG->maxbytes, 'trusttext'=>true, 'noclean'=>true);
+    
+
+        $itemid = NULL;
+  $currenttext = file_prepare_draft_area($itemid, $context->id, 'mod_flashcard', 'question', $cards->id,
+                $editoroptions, $cards->questiontext);
+        $ret->question = array('text' => $currenttext, 'format' => 1, 'itemid' => $itemid);
+
+        $itemid = NULL;
+        $currenttext = file_prepare_draft_area($itemid, $context->id, 'mod_flashcard', 'answer', $cards->id,
+                $editoroptions, $cards->answertext);
+        $ret->answer = array('text' => $currenttext, 'format' => 1, 'itemid' => $itemid);
+
+        $ret->id = $cards->id;
+
+
+
+
+
+
+
+/*
+    $i = 0;
+    foreach ($cards as $card) {
+        //echo "here";
+        $itemid = NULL;
+        $currenttext = file_prepare_draft_area($itemid, $context->id, 'mod_flashcard', 'question', $card->id,
+                $editoroptions, $card->questiontext);
+        $ret->question[$i] = array('text' => $currenttext, 'format' => 1, 'itemid' => $itemid);
+
+        $itemid = NULL;
+        $currenttext = file_prepare_draft_area($itemid, $context->id, 'mod_flashcard', 'answer', $card->id,
+                $editoroptions, $card->answertext);
+        $ret->answer[$i] = array('text' => $currenttext, 'format' => 1, 'itemid' => $itemid);
+
+        $ret->id[$i] = $card->id;
+        $i++;
+    }   */
+//print_object($ret);
+    return $ret;
+}
+
+
+function flashcard_delete_attached_files(&$cm, &$flashcard, $card){
+	
+	$fs = get_file_storage();
+
+	$context = context_module::instance($cm->id);
+	
+	switch($flashcard->questionsmediatype){
+		case FLASHCARD_MEDIA_TEXT :
+			break;
+		case FLASHCARD_MEDIA_SOUND :
+			$fs->delete_area_files($context->id, 'flashcard', 'questionsoundfile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_IMAGE :
+			$fs->delete_area_files($context->id, 'flashcard', 'questionimagefile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_VIDEO :
+			$fs->delete_area_files($context->id, 'flashcard', 'questionvideofile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_IMAGE_AND_SOUND :
+			$fs->delete_area_files($context->id, 'flashcard', 'questionimagefile', $card->id);
+			$fs->delete_area_files($context->id, 'flashcard', 'questionsoundfile', $card->id);
+			break;
+	}	
+
+	switch($flashcard->answersmediatype){
+		case FLASHCARD_MEDIA_TEXT :
+			break;
+		case FLASHCARD_MEDIA_SOUND :
+			$fs->delete_area_files($context->id, 'flashcard', 'answersoundfile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_IMAGE :
+			$fs->delete_area_files($context->id, 'flashcard', 'answerimagefile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_VIDEO :
+			$fs->delete_area_files($context->id, 'flashcard', 'answervideofile', $card->id);
+			break;
+		case FLASHCARD_MEDIA_IMAGE_AND_SOUND :
+			$fs->delete_area_files($context->id, 'flashcard', 'answersoundfile', $card->id);
+			$fs->delete_area_files($context->id, 'flashcard', 'answerimagefile', $card->id);
+			break;
+	}	
+}

@@ -23,7 +23,7 @@
     $view = optional_param('view', 'checkdecks', PARAM_ACTION);     // view
     $subview = optional_param('subview', '', PARAM_ACTION);     // subview
     $action = optional_param('what', '', PARAM_ACTION);     // command
-    
+    echo "action=$action";
     $thisurl = $CFG->wwwroot.'/mod/flashcard/view.php';
     
     $url = new moodle_url('/mod/flashcard/view.php');
@@ -123,13 +123,14 @@
     }
 
 /// Determine the current tab
-
+echo $view;
     switch($view){
         case 'checkdecks' : $currenttab = 'play'; break;
         case 'play' : $currenttab = 'play'; break;
         case 'freeplay' : $currenttab = 'freeplay'; break;
         case 'summary' : $currenttab = 'summary'; break;
         case 'manage' : $currenttab = 'manage'; break;
+        case 'editcard' : $currenttab = 'edit'; break;
         case 'edit' : $currenttab = 'edit'; break;
         case 'add' : $currenttab = 'edit'; break;        
         default : $currenttab = 'play';
@@ -140,7 +141,7 @@
     }
     
 /// print tabs
-    if (!preg_match("/(summary)|(freeplay)|(play)|(checkdecks)|(edit)|(add)|(manage)/", $view)) $view = 'checkdecks';
+    if (!preg_match("/(summary)|(freeplay)|(play)|(checkdecks)|(edit)|(editcard)|(add)|(manage)/", $view)) $view = 'checkdecks';
     $tabname = get_string('leitnergame', 'flashcard');
     $row[] = new tabobject('play', $thisurl."?id={$cm->id}&amp;view=checkdecks", $tabname);
     $tabname = get_string('freegame', 'flashcard');
@@ -192,7 +193,7 @@
     }
 
 /// print active view
-    echo $view;
+    //echo $view;
     switch ($view){
         case 'summary' : 
             if (!has_capability('mod/flashcard:manage', $context)){
@@ -217,7 +218,7 @@
             include $CFG->dirroot.'/mod/flashcard/editcardview.php';
             break;
         case 'manage' : 
-            echo "HERE WE ARE";
+            //echo "HERE WE ARE";
             if (!has_capability('mod/flashcard:manage', $context)){
                 redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
             }
@@ -229,6 +230,12 @@
                 redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
             }
             include $CFG->dirroot.'/mod/flashcard/addview.php';
+            break;
+        case 'addsingle' : 
+            if (!has_capability('mod/flashcard:manage', $context)){
+                redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
+            }
+            include $CFG->dirroot.'/mod/flashcard/addsingleview.php';
             break;
         case 'freeplay' :
             include $CFG->dirroot.'/mod/flashcard/freeplayview.php';

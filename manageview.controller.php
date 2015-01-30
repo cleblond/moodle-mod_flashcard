@@ -17,84 +17,40 @@
  */
 /* @var $OUTPUT core_renderer */
 
-if (!defined('MOODLE_INTERNAL')) {
-    error("Illegal direct access to this screen");
-}
+if (!defined('MOODLE_INTERNAL')) die("Illegal direct access to this screen");
 
-/* * ****************************** Add new blank fields **************************** */
-if ($action == 'add') {
-    $add = required_param('add', PARAM_INT);
-    $card->flashcardid = $flashcard->id;
-    $users = $DB->get_records_menu('flashcard_card', array('flashcardid' => $flashcard->id), '', 'DISTINCT userid, id');
-    for ($i = 0; $i < $add; $i++) {
-        if (!$newcardid = $DB->insert_record('flashcard_deckdata', $card)) {
-            error("Could not add card to deck");
-        }
-        if ($users) {
-            foreach (array_keys($users) as $userid) {
-                $deckcard->flashcardid = $flashcard->id;
-                $deckcard->entryid = $newcardid;
-                $deckcard->userid = $userid;
-                $deckcard->lastaccessed = 0;
-                $deckcard->deck = 1;
-                $deckcard->accesscount = 0;
-                if (!$DB->insert_record('flashcard_card', $deckcard)) {
-                    error("Could not bind card to user $userid deck");
-                }
-            }
-        }
-    }
-}
 /* * ****************************** Delete a set of records **************************** */
 if ($action == 'delete') {
-    $items = required_param('items', PARAM_INT);
-    if (is_array($items)) $items = implode(',', $items);
-    $items = str_replace(",", "','", $items);
+	
+	if (!isset($items))
+    	$items = required_param_array('items', PARAM_INT);
+	    
+    foreach($items as $item){
+    
+    	$card = $DB->get_record('flashcard_deckdata', array('id' => $item));
 
-    if (!$DB->delete_records_select('flashcard_deckdata', " id IN ('$items') ")) {
-        error("Could not add card to deck");
-    }
+    	flashcard_delete_attached_files($cm, $flashcard, $card);
+    	
+	    if (!$DB->delete_records('flashcard_deckdata', array('id' => $item))) {
+	        print_error('errordeletecard', 'flashcard');
+	    }
 
-    if (!$DB->delete_records_select('flashcard_card', " entryid IN ('$items') ")) {
-        error("Could not add card to deck");
-    }
-}
-/* * ****************************** Save and update all questions **************************** */
-if ($action == 'save') {
-    echo "HERE IN SAVE";
-    $keys = array_keys($_POST);    // get the key value of all the fields submitted
-    $qkeys = preg_grep('/^q/', $keys);   // filter out only the status
-    $akeys = preg_grep('/^a/', $keys);   // filter out only the assigned updating
-
-    foreach ($qkeys as $akey) {
-        preg_match("/[qi](\d+)/", $akey, $matches);
-        $card->id = $matches[1];
-        $card->flashcardid = $flashcard->id;
-        if ($flashcard->questionsmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
-            $card->questiontext = required_param("q{$card->id}", PARAM_CLEAN);
-        } else {
-            // combine image and sound in one single field
-            $card->questiontext = required_param("i{$card->id}", PARAM_CLEAN) . '@' . required_param("s{$card->id}",
-                            PARAM_CLEAN);
-        }
-        if ($flashcard->answersmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
-            $card->answertext = required_param("a{$card->id}", PARAM_CLEAN);
-        } else {
-            // combine image and sound in one single field
-            $card->answertext = required_param("i{$card->id}", PARAM_CLEAN) . '@' . required_param("s{$card->id}",
-                            PARAM_CLEAN);
-        }
-        if (!$DB->update_record('flashcard_deckdata', $card)) {
-            error("Could not update deck card");
-        }
-    }
+	    if (!$DB->delete_records('flashcard_card', array('entryid' => $item))) {
+	        print_error('errordeletecard', 'flashcard');
+	    }
+	}
 }
 /* * ****************************** Prepare import **************************** */
 if ($action == 'import') {
-    echo $out;
     include 'import_form.php';
-    $mform = new flashcard_import_form($flashcard->id);
+    $mform = new flashcard_import_form();
+    echo $out;
     echo $OUTPUT->heading(get_string('importingcards', 'flashcard') . $OUTPUT->help_icon('import', 'flashcard'));
+    $formdata = new StdClass;
+    $formdata->id = $cm->id;
+    $formdata->view = 'manage';
+    $formdata->what = 'doimport';
+    $mform->set_data($formdata);
     $mform->display();
     echo $OUTPUT->footer($course);
     exit(0);
@@ -102,23 +58,16 @@ if ($action == 'import') {
 /* * ****************************** Perform import **************************** */
 if ($action == 'doimport') {
     include 'import_form.php';
-    $form = new flashcard_import_form($flashcard->id);
-
-    $CARDSEPPATTERNS[0] = ':';
-    $CARDSEPPATTERNS[1] = ';';
-    $CARDSEPPATTERNS[2] = "\n";
-    $CARDSEPPATTERNS[3] = "\r\n";
+    $form = new flashcard_import_form();
 
     $FIELDSEPPATTERNS[0] = ',';
     $FIELDSEPPATTERNS[1] = ':';
-    $FIELDSEPPATTERNS[2] = " ";
-    $FIELDSEPPATTERNS[3] = "\t";
+    $FIELDSEPPATTERNS[2] = ';';
 
     if ($data = $form->get_data()) {
 
         if (!empty($data->confirm)) {
 
-            $cardsep = $CARDSEPPATTERNS[$data->cardsep];
             $fieldsep = $FIELDSEPPATTERNS[$data->fieldsep];
 
             // filters comments and non significant lines
@@ -128,9 +77,10 @@ if ($action == 'doimport') {
             $data->import = preg_replace("/(\\r?\\n)\\r?\\n/", '$1', $data->import);
             $data->import = trim($data->import);
 
-            $pairs = explode($cardsep, $data->import);
+            $pairs = preg_split("/\r?\n/", $data->import);
             if (!empty($pairs)) {
                 /// first integrity check
+                $report = new StdClass;
                 $report->cards = count($pairs);
                 $report->badcards = 0;
                 $report->goodcards = 0;
@@ -158,6 +108,7 @@ if ($action == 'doimport') {
 
                     // insert new cards
                     foreach ($inputs as $input) {
+                    	$deckcard = new StdClass;
                         $deckcard->flashcardid = $flashcard->id;
                         $deckcard->questiontext = $input->question;
                         $deckcard->answertext = $input->answer;
@@ -176,7 +127,7 @@ if ($action == 'doimport') {
                 }
 
                 echo "<center>";
-                $OUTPUT->box($reportstr, 'reportbox');
+                echo $OUTPUT->box($reportstr, 'reportbox');
                 echo "</center>";
             }
         }

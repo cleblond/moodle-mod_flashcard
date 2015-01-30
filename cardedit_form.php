@@ -1,13 +1,13 @@
 <?php
 
 require_once($CFG->libdir . '/formslib.php');
+//echo "<br>cardedit_form";
+class flashcard_cardedit_form extends moodleform {
 
-class flashcard_cardsedit_form extends moodleform {
-
-    protected $numelements = 10;
-
+    //protected $numelements = 10;
+    protected $numelements = 1;
     protected function definition() {
-        global $COURSE, $CFG, $DB, $PAGE;
+        global $COURSE, $CFG, $PAGE;
 
         $mform = $this->_form;
         if (isset($this->_customdata['noaddbutton']) && $this->_customdata['noaddbutton']) {
@@ -15,13 +15,29 @@ class flashcard_cardsedit_form extends moodleform {
         } else {
             $noaddbutton = false;
         }
-
+        //echo "cardid=$cardid";
         $context = $this->_customdata['context'];
+        $cardid = $this->_customdata['cardid'];
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'view');
         $mform->setType('view', PARAM_TEXT);
+        //print_object($question);
+        //print_object($this);
+        //echo "cardid=$cardid";
+            //$i=7;
+            $cardid=$cardid-1;
+            $mform->addElement('editor', "question", get_string('question', 'flashcard'), null,
+                    array('context' => $context, 'maxfiles' => EDITOR_UNLIMITED_FILES,'noclean'=>true));
+            $mform->addElement('editor', "answer", get_string('answer', 'flashcard'), null,
+                    array('context' => $context, 'maxfiles' => EDITOR_UNLIMITED_FILES,'noclean'=>true));
+            $mform->addElement('hidden', "cardid");
+            $mform->setType("cardid", PARAM_INT);
+
+
+
+/*
 
         for ($i = 0; $i < $this->numelements; $i++) {
             $mform->addElement('editor', "question[$i]", get_string('question', 'flashcard'), null,
@@ -31,7 +47,7 @@ class flashcard_cardsedit_form extends moodleform {
             $mform->addElement('hidden', "cardid[$i]");
             $mform->setType("cardid[$i]", PARAM_INT);
         }
-
+*/
 
         //-------------------------------------------------------------------------------
 //        $mform->addElement('header', 'general', get_string('general', 'form'));

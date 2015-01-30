@@ -15,33 +15,43 @@
  */
 /* @var $OUTPUT core_renderer */
 
-
+//echo "<br>editcardview";
 
 if ($cardid = optional_param('cardid', 0, PARAM_INT)){
 		$card = $DB->get_record('flashcard_deckdata', array('id' => $cardid));
                 //print_object($card);
 }
 
+//echo "action=$action";
+
+
 if (!defined('MOODLE_INTERNAL')) {
     error("Illegal direct access to this screen");
 }
 
 require_once('cardedit_form.php');
-
+//echo "action=$action";
 if ($action != '') {
+    //echo "HHHEEEERERERERERER";
     $result = include "{$CFG->dirroot}/mod/flashcard/editview.controller.php";
 }
 
 $page = optional_param('page', 0, PARAM_INT);
 
-$cardsnum = $DB->count_records('flashcard_deckdata', array('flashcardid' => $flashcard->id));
-$form = new flashcard_cardsedit_form(null, array('context' => $context));
+//$cardsnum = $DB->count_records('flashcard_deckdata', array('flashcardid' => $flashcard->id));
+$form = new flashcard_cardedit_form(null, array('context' => $context, 'cardid' => $cardid));
 $fileoptions = array(
     'subdirs' => false,
     'maxfiles' => -1,
     'maxbytes' => 0,
 );
+
+
+//print_object($form->get_data());
+
+
 if ($fromform = $form->get_data()) {
+
     foreach ($fromform->cardid as $k => $id) {
         if ($id) {
             //update
@@ -82,27 +92,35 @@ if ($fromform = $form->get_data()) {
         }
     }
 }
-
-if ($fromform && isset($fromform->addmore)) {
+print_object($fromform);
+//if ($fromform && $action=='addone') {
+if ($action == 'addone') {
     //empty page, redirect to add page
-    $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'add'));
+    $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'addsingle'));
     redirect($url);
 } elseif ($fromform) {
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'edit', 'page' => $page));
     redirect($url);
 } else {
-    $pagedata = flashcard_get_page($flashcard, $page);
+    echo "HERE";
+    $pagedata = flashcard_get_card($flashcard, $cardid);
 }
+//print_object($pagedata);
 echo $out;
-echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);
+//echo "flashcards_per_page=".FLASHCARD_CARDS_PER_PAGE;
+
+//echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);
 $toform = new object();
 $toform->question = $pagedata->question;
+//print_object($pagedata->question);
 $toform->answer = $pagedata->answer;
 $toform->cardid = $pagedata->id;
-$toform->view = 'edit';
+$toform->view = 'editcard';
 $toform->id = $cm->id;
+//print_object($pagedata->id);
+//print_object($toform);
 $form->set_data($toform);
 $form->display();
 
-$url = new moodle_url('/mod/flashcard/view.php', array('a' => $flashcard->id, 'view' => 'edit'));
-echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);
+//$url = new moodle_url('/mod/flashcard/view.php', array('a' => $flashcard->id, 'view' => 'editcard'));
+//echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);

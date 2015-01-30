@@ -78,15 +78,18 @@ if ($fromform = $form->get_data()) {
 
 if ($fromform && isset($fromform->addmore)) {
     //empty page, redirect to add page
+    echo "here addmore";
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'add'));
     redirect($url);
 } elseif ($fromform) {
+    echo "here2";
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'edit', 'page' => $page));
     redirect($url);
 } else {
     $pagedata = flashcard_get_page($flashcard, $page);
 }
 echo $out;
+$url = new moodle_url('/mod/flashcard/view.php', array('a' => $flashcard->id, 'view' => 'edit'));
 echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);
 $toform = new object();
 $toform->question = $pagedata->question;
@@ -97,5 +100,5 @@ $toform->id = $cm->id;
 $form->set_data($toform);
 $form->display();
 
-$url = new moodle_url('/mod/flashcard/view.php', array('a' => $flashcard->id, 'view' => 'edit'));
+
 echo $OUTPUT->paging_bar($cardsnum, $page, FLASHCARD_CARDS_PER_PAGE, $url);
