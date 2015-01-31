@@ -33,6 +33,7 @@
     
     $url = new moodle_url('/mod/flashcard/view.php');
     $PAGE->set_url($url, array('id'=>$id));
+    $PAGE->set_pagelayout('incourse');
     if ($id) {
 
 
@@ -148,7 +149,7 @@
         case 'manage' : $currenttab = 'manage'; break;
         case 'editcard' : $currenttab = 'edit'; break;
         case 'addsingle' : $currenttab = 'edit'; break;
-        case 'edit' : $currenttab = 'edit'; break;
+        case 'edit' : $currenttab = 'manage'; break;
         case 'add' : $currenttab = 'edit'; break;        
         default : $currenttab = 'play';
     }
@@ -158,7 +159,7 @@
     }
     
 /// print tabs
-    if (!preg_match("/(summary)|(freeplay)|(play)|(checkdecks)|(edit)|(editcard)|(add)|(manage)/", $view)) $view = 'checkdecks';
+    if (!preg_match("/(summary)|(freeplay)|(play)|(checkdecks)|(edit)|(editcard)|(add)|(addsingle)|(manage)/", $view)) $view = 'checkdecks';
     $tabname = get_string('leitnergame', 'flashcard');
     $row[] = new tabobject('play', $thisurl."?id={$cm->id}&amp;view=checkdecks", $tabname);
     $tabname = get_string('freegame', 'flashcard');
@@ -166,12 +167,14 @@
     if (has_capability('mod/flashcard:manage', $context)){
         $tabname = get_string('teachersummary', 'flashcard');
         $row[] = new tabobject('summary', $thisurl."?view=summary&amp;id={$cm->id}&amp;subview=byusers", $tabname);
-        $tabname = get_string('edit', 'flashcard');
-        $row[] = new tabobject('edit', $thisurl."?view=edit&amp;id={$cm->id}", $tabname);
+        //$tabname = get_string('edit', 'flashcard');
+        //$row[] = new tabobject('edit', $thisurl."?view=edit&amp;id={$cm->id}", $tabname);
+        $tabname = get_string('manage', 'flashcard');
+        $row[] = new tabobject('manage', $thisurl."?view=manage&amp;id={$cm->id}", $tabname);
         $tabname = get_string('import', 'flashcard');
         $row[] = new tabobject('import', $thisurl."?what=import&amp;view=edit&amp;id={$cm->id}", $tabname);
-        $tabname = 'Manage';//get_string('import', 'flashcard');
-        $row[] = new tabobject('manage', $thisurl."?view=manage&amp;id={$cm->id}", $tabname);    
+        //$tabname = 'Manage';//get_string('import', 'flashcard');
+        //$row[] = new tabobject('manage', $thisurl."?view=manage&amp;id={$cm->id}", $tabname);    
     }
     $tabrows[] = $row;
     

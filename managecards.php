@@ -27,7 +27,8 @@
     $table->width = '100%';    
     $table->align = array('center', 'center', 'center', 'center');
 
-	$editurl = $CFG->wwwroot.'/mod/flashcard/view.php?id='.$id.'&view=editcard';
+    $editurl = $CFG->wwwroot.'/mod/flashcard/view.php?id='.$id.'&view=editcard';
+    $editmultiurl = $CFG->wwwroot.'/mod/flashcard/view.php?id='.$id.'&view=edit';
 
 	$i = 0;
 	if ($cards){
@@ -88,10 +89,15 @@
 			$table->data[] = array($check, $back, $front, $command);
 			$i++;
 		}
-
+	        $sesskey = sesskey();
+		$addone = get_string('addone', 'flashcard');
+		$addthree = get_string('addthree', 'flashcard');
+		$deleteselectionstr = get_string('deleteselection', 'flashcard');
 		echo '<center>';
 		echo $OUTPUT->paging_bar($allcards, $page, $pagesize, $url.'?id='.$id.'&view=manage', 'page');
 		echo '</center>';
+                echo '<div class=\"rightlinks\">';
+	        echo "<a href=\"{$editurl}&what=addone&sesskey={$sesskey}\">$addone</a> - <a href=\"{$editmultiurl}\">$addthree</a></div>";
 		echo '<form name="deletecards" action="'.$url.'" method="get">';	
 		echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';	
 		echo '<input type="hidden" name="view" value="manage" />';	
@@ -107,13 +113,11 @@
 		echo '<br/>';
 	}
 
-	$addone = get_string('addone', 'flashcard');
-	$addthree = get_string('addthree', 'flashcard');
-	$deleteselectionstr = get_string('deleteselection', 'flashcard');
-	$sesskey = sesskey();
+
+
 	echo '<div class=\"rightlinks\">';
 	if ($cards){
 		echo "<a href=\"javascript:document.forms['deletecards'].submit();\">$deleteselectionstr</a> - ";
 	}
-	echo "<a href=\"{$editurl}&what=addone&sesskey={$sesskey}\">$addone</a> - <a href=\"{$editurl}&what=addthree&sesskey={$sesskey}\">$addthree</a></div>";
+	echo "<a href=\"{$editurl}&what=addone&sesskey={$sesskey}\">$addone</a> - <a href=\"{$editmultiurl}\">$addthree</a></div>";
 	

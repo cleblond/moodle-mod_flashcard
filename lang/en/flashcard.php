@@ -9,7 +9,7 @@
  */
 
 $string['addone'] = 'Add a new question';
-$string['addthree'] = 'Add three new questions';
+$string['addthree'] = 'Add/edit multiple question';
 $string['answer'] = 'Answers';
 $string['answersmediatype'] = 'Media type for answers';
 $string['autodowngrade'] = 'Enable autodowngrade';
@@ -45,6 +45,7 @@ $string['deleteselection'] = 'Delete the selection';
 $string['difficultcards'] = 'Hard set';
 $string['easycards'] = 'Easy set';
 $string['edit'] = 'Edit the cards';
+$string['manage'] = 'Manage cards';
 $string['editingcards1'] = 'Edit Flashcard Set';
 $string['editingcards2'] = 'Edit Flashcard Set';
 $string['emptyset'] = 'Flashcard Set is Empty';

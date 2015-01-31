@@ -92,9 +92,9 @@ if ($action == 'save') {
 }
 /* * ****************************** Save and update single question **************************** */
 if ($action == 'savesingle') {
-    echo "HERE IN SAVESINGLE";
+    //echo "HERE IN SAVESINGLE";
     $keys = array_keys($_POST);    // get the key value of all the fields submitted
-    print_object($_POST);
+    //print_object($_POST);
     
     //$qkeys = preg_grep('/^q/', $keys);   // filter out only the status
     //$akeys = preg_grep('/^a/', $keys);   // filter out only the assigned updating

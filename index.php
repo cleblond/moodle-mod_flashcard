@@ -22,7 +22,7 @@
 
     require_login($course->id);
 	$PAGE->set_url('/mod/flashcard/index.php', array('id' => $course->id));
-    add_to_log($course->id, 'flashcard', 'view all', "index.php?id=$course->id", '');
+    //add_to_log($course->id, 'flashcard', 'view all', "index.php?id=$course->id", '');
 
 
 /// Get all required strings
