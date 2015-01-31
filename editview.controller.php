@@ -99,18 +99,35 @@ if ($action == 'savesingle') {
     //$qkeys = preg_grep('/^q/', $keys);   // filter out only the status
     //$akeys = preg_grep('/^a/', $keys);   // filter out only the assigned updating
        // $question=required_param('question', PARAM_CLEAN);
-        $question=required_param_array('question', PARAM_CLEAN);
+        if($question=optional_param_array('question', null, PARAM_CLEAN)){
+        $question=optional_param_array('question', null, PARAM_CLEAN);
+        $answer=optional_param_array('answer', null, PARAM_CLEAN);
+        } else {
+        return;
+        }
         print_object($question['text']);
+        $newcard = new stdClass();
+        $newcard->flashcardid = $flashcard->id;
+        $newcard->questiontext = $question['text'];
+        $newcard->answertext = $answer['text'];
+        $DB->insert_record('flashcard_deckdata', $newcard);
+
+        $url = new moodle_url('view.php', array('id' => $flashcard->id, 'view' => 'manage'));
+        redirect($url);
+
+
+
+/*
 
     //foreach ($qkeys as $akey) {
         preg_match("/[qi](\d+)/", $akey, $matches);
         $card->id = $matches[1];
         $card->flashcardid = $flashcard->id;
         if ($flashcard->questionsmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
-            $card->questiontext = required_param("q{$card->id}", PARAM_CLEAN);
+            $card->questiontext = $question['text'];
         } else {
             // combine image and sound in one single field
-            $card->questiontext = required_param("i{$card->id}", PARAM_CLEAN) . '@' . required_param("s{$card->id}",
+            $card->questiontext = $question['text'] . '@' . required_param("s{$card->id}",
                             PARAM_CLEAN);
         }
         if ($flashcard->answersmediatype != FLASHCARD_MEDIA_IMAGE_AND_SOUND) {
@@ -124,6 +141,7 @@ if ($action == 'savesingle') {
             error("Could not update deck card");
         }
     //}
+*/
 }
 /* * ****************************** Prepare import **************************** */
 if ($action == 'import') {

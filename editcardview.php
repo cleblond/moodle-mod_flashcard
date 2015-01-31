@@ -102,7 +102,7 @@ if ($action == 'addone') {
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'edit', 'page' => $page));
     redirect($url);
 } else {
-    echo "HERE";
+    //echo "HERE";
     $pagedata = flashcard_get_card($flashcard, $cardid);
 }
 //print_object($pagedata);

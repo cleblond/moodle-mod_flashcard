@@ -78,11 +78,11 @@ if ($fromform = $form->get_data()) {
 
 if ($fromform && isset($fromform->addmore)) {
     //empty page, redirect to add page
-    echo "here addmore";
+    //echo "here addmore";
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'add'));
     redirect($url);
 } elseif ($fromform) {
-    echo "here2";
+    //echo "here2";
     $url = new moodle_url('view.php', array('a' => $flashcard->id, 'view' => 'edit', 'page' => $page));
     redirect($url);
 } else {

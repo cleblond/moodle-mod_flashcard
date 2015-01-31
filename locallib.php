@@ -438,7 +438,7 @@ function flashcard_get_card_status(&$flashcard) {
     // get decks by card
     $sql = "
         SELECT
-           dd.questiontext,
+           dd.id, dd.questiontext,
            COUNT(c.id) as amount,
            c.deck AS deck
         FROM
@@ -458,7 +458,7 @@ function flashcard_get_card_status(&$flashcard) {
     // get accessed by card
     $sql = "
         SELECT
-           dd.questiontext,
+           dd.id, dd.questiontext,
            SUM(accesscount) AS accessed
         FROM
             {flashcard_deckdata} dd

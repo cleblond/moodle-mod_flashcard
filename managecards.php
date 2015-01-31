@@ -32,6 +32,7 @@
 	$i = 0;
 	if ($cards){
 		foreach ($cards as $card){
+                        //echo $card->id;
 			$check = "<input type=\"checkbox\" name=\"items[]\" value=\"{$card->id}\" />";
 	       //CRL for now only show text - maybe thumbnails or somehting
 	       /* if ($flashcard->questionsmediatype == FLASHCARD_MEDIA_IMAGE) {
@@ -51,7 +52,13 @@
 	            // $back .= flashcard_play_sound($flashcard, $sound, 'false', true, "bell_f$i");
 	            $back = flashcard_play_sound($flashcard, "questionsoundfile/{$card->id}", 'false', true, "bell_b$i");
 	        } else {  */
-	            $back = format_text($card->questiontext, FORMAT_MOODLE);
+	            //$back = format_text($card->questiontext, FORMAT_MOODLE);
+                    //echo $flashcard->id;
+                      
+                    $back = file_rewrite_pluginfile_urls($card->questiontext, 'pluginfile.php',
+                    $context->id, 'mod_flashcard', 'question', $card->id);
+                    //$back = format_text($backtext, FORMAT_MOODLE);
+                    
 	        //}
 	//Before calling format_text(), the content must be processed with file_rewrite_pluginfile_urls()
 	        /*if ($flashcard->answersmediatype == FLASHCARD_MEDIA_IMAGE) {
@@ -71,7 +78,9 @@
 	            // $front .= flashcard_play_sound($flashcard, $sound, 'false', true, "bell_f$i");
 	            $front = flashcard_play_sound($flashcard, "answersoundfile/{$card->id}", 'false', true, "bell_f$i");
 	        } else {  */
-	            $front = format_text($card->answertext, FORMAT_MOODLE);
+                    $front = file_rewrite_pluginfile_urls($card->questiontext, 'pluginfile.php',
+                    $context->id, 'mod_flashcard', 'question', $card->id);
+	            //$front = format_text($fronttext, FORMAT_MOODLE);
 	        //}
 	
 			$command = "<a href=\"{$editurl}&what=update&cardid={$card->id}\"><img src=\"".$OUTPUT->pix_url('t/edit').'" /></a>';

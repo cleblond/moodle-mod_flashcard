@@ -23,7 +23,8 @@
 
     require_once($CFG->dirroot.'/enrol/locallib.php');
     
-    $course_context = get_context_instance(CONTEXT_COURSE, $COURSE->id);
+    $coursecontext = context_course::instance($COURSE->id);
+    //$course_context = get_context_instance(CONTEXT_COURSE, $COURSE->id);
     $course = $DB->get_record('course', array('id'=>$COURSE->id), '*', MUST_EXIST);
     $manager = new course_enrolment_manager($PAGE,$course);
     $courseusers = $manager->get_users('lastname','ASC',0,250);

@@ -1,5 +1,7 @@
-Reviewed version for over 2.0.
-Valery Fremaux 2008
+Flashcard module for Moodle 2.8+.  This is a hybrid version of the two older flashcard modules for Moodle.  It has some features of both the 2.4 and 3.2 versions developed by Gustav Delius, Valery Fremaux and Tomasz Muras.
+
+Things to do.
+++ I disabled event logging but it needs converted to new events api.
 
 USING THE Flashcard Activity
 -----------------------------

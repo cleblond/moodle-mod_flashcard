@@ -15,20 +15,36 @@
     /* @var $OUTPUT core_renderer */
 
     require_once('../../config.php');
-    require_once($CFG->dirroot.'/mod/flashcard/lib.php');
+    require_once('lib.php');
     require_once($CFG->dirroot.'/mod/flashcard/locallib.php');
+ 
+    //$id = optional_param('id', PARAM_INT);
+    
+
+
 
     $id = optional_param('id', '', PARAM_INT);    // Course Module ID, or
     $a = optional_param('a', '', PARAM_INT);     // flashcard ID
     $view = optional_param('view', 'checkdecks', PARAM_ACTION);     // view
     $subview = optional_param('subview', '', PARAM_ACTION);     // subview
     $action = optional_param('what', '', PARAM_ACTION);     // command
-    echo "action=$action";
+    //echo "action=$action";
     $thisurl = $CFG->wwwroot.'/mod/flashcard/view.php';
     
     $url = new moodle_url('/mod/flashcard/view.php');
     $PAGE->set_url($url, array('id'=>$id));
     if ($id) {
+
+
+       list ($course, $cm) = get_course_and_cm_from_cmid($id, 'flashcard');
+
+
+       // if (! $cm = $DB->get_record('course_modules', array('id' => $id))) {
+       //     print_error('invalidcoursemodule');
+       // }
+       $flashcard = $DB->get_record('flashcard', array('id'=> $cm->instance), '*', MUST_EXIST);
+
+/*
         if (! $cm = $DB->get_record('course_modules', array('id' => $id))) {
             print_error('invalidcoursemodule');
         }
@@ -37,7 +53,7 @@
         }
         if (! $flashcard = $DB->get_record('flashcard', array('id' => $cm->instance))) {
             print_error('errorinvalidflashcardid', 'flashcard');
-        }
+        }*/
     } else {
         if (! $flashcard = $DB->get_record('flashcard', array('id' => $a))) {
             print_error('invalidcoursemodule');
@@ -123,7 +139,7 @@
     }
 
 /// Determine the current tab
-echo "view=$view";
+//echo "view=$view";
     switch($view){
         case 'checkdecks' : $currenttab = 'play'; break;
         case 'play' : $currenttab = 'play'; break;
@@ -227,7 +243,7 @@ echo "view=$view";
             include $CFG->dirroot.'/mod/flashcard/managecards.php';
             break;
         case 'add' :
-            echo "<br>in add case";
+            //echo "<br>in add case";
             if (!has_capability('mod/flashcard:manage', $context)){
                 redirect($thisurl."?view=checkdecks&amp;id={$cm->id}");
             }

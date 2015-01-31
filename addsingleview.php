@@ -33,8 +33,8 @@ $cardsnum = $DB->count_records('flashcard_deckdata', array('flashcardid' => $fla
 $form = new flashcard_cardedit_form(null, array('noaddbutton' => true, 'context' => $context, 'cardid' => $cardid));
 $form->set_data(array('view' => 'addsingle', 'id' => $cm->id));
 
-echo "cardid=$cardid";
-echo "IN ADDSINGLEVUEW";
+//echo "cardid=$cardid";
+//echo "IN ADDSINGLEVUEW";
 if ($fromform = $form->get_data()) {
     $fileoptions = array(
         'subdirs' => false,
