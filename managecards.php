@@ -8,6 +8,11 @@
 		include 'manageview.controller.php';
 	}
 
+	        $sesskey = sesskey();
+		$addone = get_string('addone', 'flashcard');
+		$addthree = get_string('addthree', 'flashcard');
+
+
 	$pagesize = 20;
     $allcards = $DB->count_records('flashcard_deckdata', array('flashcardid' => $flashcard->id));
     
@@ -89,9 +94,7 @@
 			$table->data[] = array($check, $back, $front, $command);
 			$i++;
 		}
-	        $sesskey = sesskey();
-		$addone = get_string('addone', 'flashcard');
-		$addthree = get_string('addthree', 'flashcard');
+
 		$deleteselectionstr = get_string('deleteselection', 'flashcard');
 		echo '<center>';
 		echo $OUTPUT->paging_bar($allcards, $page, $pagesize, $url.'?id='.$id.'&view=manage', 'page');
