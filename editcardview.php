@@ -92,7 +92,7 @@ if ($fromform = $form->get_data()) {
         }
     }
 }
-print_object($fromform);
+//print_object($fromform);
 //if ($fromform && $action=='addone') {
 if ($action == 'addone') {
     //empty page, redirect to add page
