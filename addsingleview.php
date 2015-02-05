@@ -61,7 +61,7 @@ if ($fromform = $form->get_data()) {
             $savedanswer = file_save_draft_area_files($fromform->answer[$k]['itemid'], $context->id, 'mod_flashcard',
                     'answer', $newcard->id, $fileoptions, $fromform->answer[$k]['text']);
             $newcard->answertext = $savedanswer;
-            print_object($newcard);
+            //print_object($newcard);
             $DB->update_record('flashcard_deckdata', $newcard);
         }
     }

@@ -105,7 +105,7 @@ if ($action == 'savesingle') {
         } else {
         return;
         }
-        print_object($question['text']);
+        //print_object($question['text']);
         $newcard = new stdClass();
         $newcard->flashcardid = $flashcard->id;
         $newcard->questiontext = $question['text'];
